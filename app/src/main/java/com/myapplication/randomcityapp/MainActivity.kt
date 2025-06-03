@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: CityEmissionAdapter
     private lateinit var database: AppDatabase
+    private var isInForeground = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +30,16 @@ class MainActivity : AppCompatActivity() {
         setupRecyclerView()
         setupFab()
         observeEmissions()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isInForeground = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        isInForeground = false
     }
 
     private fun setupToolbar() {
@@ -53,7 +64,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupFab() {
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
             lifecycleScope.launch {
-                val cityData = CityProducer.producer.collect { cityData ->
+                CityProducer.createProducer(isInForeground).collect { cityData ->
                     val emission = CityEmission(
                         city = cityData.city,
                         color = cityData.color,

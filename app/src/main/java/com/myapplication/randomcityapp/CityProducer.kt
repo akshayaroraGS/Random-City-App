@@ -8,11 +8,13 @@ import kotlin.random.Random
 object CityProducer {
     private val random = Random(System.currentTimeMillis())
 
-    val producer: Flow<CityData> = flow {
+    fun createProducer(isInForeground: Boolean): Flow<CityData> = flow {
         while (true) {
-            val randomCity = CityLists.cities.random(random)
-            val randomColor = CityLists.colors.random(random)
-            emit(CityData(randomCity, randomColor))
+            if (isInForeground) {
+                val randomCity = CityLists.cities.random(random)
+                val randomColor = CityLists.colors.random(random)
+                emit(CityData(randomCity, randomColor))
+            }
             delay(5000) // 5 seconds delay
         }
     }
