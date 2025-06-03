@@ -13,7 +13,7 @@ class SplashActivity : AppCompatActivity() {
 
         // Observe the producer and navigate to MainActivity on first emission
         lifecycleScope.launch {
-            CityProducer.producer.collect {
+            CityProducer.createProducer(true).collect {
                 startActivity(Intent(this@SplashActivity, MainActivity::class.java))
                 finish()
             }
